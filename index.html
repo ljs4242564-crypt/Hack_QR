@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' blob: data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="description" content="URL을 QR 코드로 만들고, QR 이미지에서 URL을 읽어내는 브라우저 도구입니다.">
+  <title>QR Link — 만들고, 읽고, 바로 연결하세요</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="QR Link 홈">
+      <span class="brand-mark" aria-hidden="true"><i data-lucide="scan-qr-code"></i></span>
+      <span>QR Link</span>
+    </a>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="다크 모드로 전환" title="테마 변경">
+      <i data-lucide="moon" class="theme-icon theme-icon-dark" aria-hidden="true"></i>
+      <i data-lucide="sun" class="theme-icon theme-icon-light" aria-hidden="true"></i>
+    </button>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <span class="eyebrow"><i data-lucide="sparkles" aria-hidden="true"></i> 빠르고 안전한 QR 도구</span>
+      <h1 id="hero-title">링크를 담고,<br><span>한 번에 꺼내세요.</span></h1>
+      <p>설치 없이 브라우저에서 URL을 QR 코드로 만들거나<br class="desktop-break"> 이미지 속 QR 링크를 바로 확인하세요.</p>
+    </section>
+
+    <section class="workspace" aria-label="QR 도구">
+      <div class="tabs" role="tablist" aria-label="기능 선택">
+        <button class="tab-button active" id="generate-tab" type="button" role="tab" aria-selected="true" aria-controls="generate-panel" data-tab="generate">
+          <i data-lucide="qr-code" aria-hidden="true"></i> QR 만들기
+        </button>
+        <button class="tab-button" id="scan-tab" type="button" role="tab" aria-selected="false" aria-controls="scan-panel" data-tab="scan" tabindex="-1">
+          <i data-lucide="image-up" aria-hidden="true"></i> 이미지 읽기
+        </button>
+      </div>
+
+      <section class="tool-panel active" id="generate-panel" role="tabpanel" aria-labelledby="generate-tab">
+        <div class="panel-copy">
+          <span class="step-label">01 · CREATE</span>
+          <h2>URL로 QR 코드 만들기</h2>
+          <p>공유할 주소를 입력하면 즉시 QR 코드가 생성됩니다.</p>
+          <form id="qr-form" novalidate>
+            <label for="url-input">URL 주소</label>
+            <div class="input-shell" id="url-input-shell">
+              <i data-lucide="link-2" aria-hidden="true"></i>
+              <input id="url-input" name="url" type="url" inputmode="url" autocomplete="url" placeholder="https://example.com" aria-describedby="url-help">
+              <button class="clear-button" id="clear-url" type="button" aria-label="입력한 URL 지우기" hidden><i data-lucide="x" aria-hidden="true"></i></button>
+            </div>
+            <p class="field-message" id="url-help">http:// 또는 https:// 주소를 입력해 주세요.</p>
+            <button class="primary-button" type="submit"><i data-lucide="wand-sparkles" aria-hidden="true"></i> QR 코드 생성</button>
+          </form>
+        </div>
+
+        <div class="result-card" id="qr-result" aria-live="polite">
+          <div class="qr-placeholder" id="qr-placeholder">
+            <i data-lucide="qr-code" aria-hidden="true"></i>
+            <p>생성된 QR 코드가<br>여기에 표시됩니다.</p>
+          </div>
+          <div class="qr-output" id="qr-output" hidden>
+            <div class="qr-frame"><div id="qr-code"></div></div>
+            <p class="result-url" id="generated-url"></p>
+            <button class="secondary-button" id="download-qr" type="button"><i data-lucide="download" aria-hidden="true"></i> PNG로 저장</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="tool-panel" id="scan-panel" role="tabpanel" aria-labelledby="scan-tab" hidden>
+        <div class="panel-copy">
+          <span class="step-label">02 · DECODE</span>
+          <h2>이미지에서 URL 찾기</h2>
+          <p>QR 코드 이미지는 서버로 전송되지 않고 기기 안에서만 처리됩니다.</p>
+          <div class="drop-zone" id="drop-zone" tabindex="0" role="button" aria-label="QR 이미지 업로드">
+            <input id="file-input" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+            <span class="upload-icon"><i data-lucide="image-plus" aria-hidden="true"></i></span>
+            <strong>이미지를 끌어다 놓으세요</strong>
+            <span>또는 클릭해서 파일 선택 · PNG, JPG, WEBP</span>
+            <button class="secondary-button" id="browse-button" type="button"><i data-lucide="folder-open" aria-hidden="true"></i> 이미지 선택</button>
+          </div>
+          <p class="privacy-note"><i data-lucide="shield-check" aria-hidden="true"></i> 모든 처리는 브라우저 안에서 안전하게 진행됩니다.</p>
+        </div>
+
+        <div class="result-card scan-result-card" id="scan-result" aria-live="polite">
+          <div class="qr-placeholder" id="scan-placeholder">
+            <i data-lucide="scan-line" aria-hidden="true"></i>
+            <p>QR 이미지를 올리면<br>분석 결과가 표시됩니다.</p>
+          </div>
+          <div class="scan-progress" id="scan-progress" hidden>
+            <i data-lucide="loader-circle" aria-hidden="true"></i>
+            <p>QR 코드를 확인하고 있어요…</p>
+          </div>
+          <div class="scan-output" id="scan-output" hidden>
+            <img id="scan-preview" alt="업로드한 QR 코드 미리보기">
+            <span class="success-badge"><i data-lucide="circle-check" aria-hidden="true"></i> URL을 찾았어요</span>
+            <a class="decoded-link" id="decoded-link" href="#" target="_blank" rel="noopener noreferrer"></a>
+            <div class="result-actions">
+              <button class="secondary-button" id="copy-url" type="button"><i data-lucide="copy" aria-hidden="true"></i> 복사</button>
+              <a class="primary-button compact" id="open-url" href="#" target="_blank" rel="noopener noreferrer"><i data-lucide="external-link" aria-hidden="true"></i> 열기</a>
+            </div>
+          </div>
+          <div class="scan-error" id="scan-error" hidden>
+            <i data-lucide="circle-alert" aria-hidden="true"></i>
+            <h3>QR 코드를 찾지 못했어요</h3>
+            <p>이미지가 선명하고 QR 코드 전체가 보이는지 확인해 주세요.</p>
+            <button class="secondary-button" id="retry-scan" type="button"><i data-lucide="refresh-cw" aria-hidden="true"></i> 다시 선택</button>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <p><i data-lucide="lock-keyhole" aria-hidden="true"></i> 입력한 정보와 이미지는 저장하거나 전송하지 않습니다.</p>
+    <span>QR Link · Browser-only utility</span>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><i data-lucide="check" aria-hidden="true"></i><span>복사되었습니다.</span></div>
+  <canvas id="scan-canvas" hidden></canvas>
+
+  <script src="vendor/qrcode.min.js"></script>
+  <script src="vendor/jsQR.min.js"></script>
+  <script src="vendor/lucide.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

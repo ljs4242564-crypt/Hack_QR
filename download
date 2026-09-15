@@ -1,0 +1,23 @@
+# 운영체제 및 에디터 임시 파일
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# 환경 변수와 민감정보
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# 로그 및 빌드 산출물
+*.log
+node_modules/
+dist/
+coverage/
